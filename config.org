@@ -1,0 +1,187 @@
+* Emacs Initialization
+
+** Packages Sources
+
+#+begin_src emacs-lisp :tangle yes
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.org/packages/")
+                         ("org" . "http://orgmode.org/elpa/")))
+#+end_src
+
+** use-package
+
+To be able to manage its configuration with =use-package= it is necessary to
+first install it, if you don't already.
+
+#+begin_src emacs-lisp :tangle yes
+(unless (package-installed-p 'use-package)
+(package-refresh-contents)
+  (package-install 'use-package))
+
+(use-package delight :ensure t)
+(use-package use-package-ensure-system-package :ensure t)
+#+end_src
+
+* Start up
+** Better defaults
+
+For a better user experience of GNU Emacs, here are the default values I use.
+
+#+begin_src emacs-lisp :tangle yes
+(setq-default
+ ad-redefinition-action 'accept                   ; Silence warnings for redefinition
+ cursor-in-non-selected-windows t                 ; Hide the cursor in inactive windows
+ display-time-default-load-average nil            ; Don't display load average
+ fill-column 80                                   ; Set width for automatic line breaks
+ help-window-select t                             ; Focus new help windows when opened
+ inhibit-startup-screen t                         ; Disable start-up screen
+ initial-scratch-message ""                       ; Empty the initial *scratch* buffer
+ indent-tabs-mode nil                             ; Stop using tabs to indent
+ kill-ring-max 128                                ; Maximum length of kill ring
+ load-prefer-newer t                              ; Prefers the newest version of a file
+ mark-ring-max 128                                ; Maximum length of mark ring
+ scroll-conservatively most-positive-fixnum       ; Always scroll by one line
+ select-enable-clipboard t                        ; Merge system's and Emacs' clipboard
+ tab-width 4                                      ; Set width for tabs
+ use-package-always-ensure t                      ; Avoid the :ensure keyword for each package
+ vc-follow-symlinks t                             ; Always follow the symlinks
+ view-read-only t)                                ; Always open read-only buffers in view-mode
+(cd "~/")                                         ; Move to the user directory
+(column-number-mode 1)                            ; Show the column number
+(display-time-mode 1)                             ; Enable time in the mode-line
+(fset 'yes-or-no-p 'y-or-n-p)                     ; Replace yes/no prompts with y/n
+(global-hl-line-mode)                             ; Hightlight current line
+(set-default-coding-systems 'utf-8)               ; Default to utf-8 encoding
+(show-paren-mode 1)                               ; Show the parent
+#+end_src
+
+** Theme
+
+#+begin_src emacs-lisp :tangle yes
+(use-package nord-theme
+  :config
+  (add-to-list 'custom-theme-load-path (expand-file-name "~/.emacs.d/themes/"))
+  (load-theme 'nord t))
+
+(use-package doom-modeline
+  :defer 0.1
+  :config (doom-modeline-mode))
+#+end_src
+** Font
+#+begin_src emacs-lisp :tangle yes
+;; Set default font
+(set-face-attribute 'default nil
+                    :family "Hack"
+                    :height 120
+                    :weight 'normal
+                    :width 'normal)
+#+end_src
+** Turn off mouse interface
+
+Since I never use the mouse with GNU Emacs, I prefer not to use certain
+graphical elements as seen as the menu bar, toolbar, scrollbar and tooltip that
+I find invasive.
+
+#+begin_src emacs-lisp :tangle yes
+(when window-system
+  (menu-bar-mode -1)              ; Disable the menu bar
+  (scroll-bar-mode -1)            ; Disable the scroll bar
+  (tool-bar-mode -1)              ; Disable the tool bar
+  (tooltip-mode -1))              ; Disable the tooltips
+#+end_src
+** MacOS specific
+General remapping and $PATH settings
+#+begin_src emacs-lisp :tangle yes
+(when (eq system-type 'darwin)
+  (setq-default
+   exec-path (append exec-path '("/usr/local/bin"))  ; Add Homebrew path
+   ns-command-modifier 'meta                         ; Map Meta to the Cmd key
+   ns-option-modifier 'super                         ; Map Super to the Alt key
+   ns-right-option-modifier nil))                    ; Disable the right Alt key
+#+end_src
+Initialize environment variables.
+#+begin_src emacs-lisp :tangle yes
+(use-package exec-path-from-shell
+  :if (memq window-system '(mac ns))
+  :defer 1
+  :config (exec-path-from-shell-initialize))
+#+end_src
+* Development
+** Git
+#+begin_src emacs-lisp :tangle yes
+(use-package magit)
+(use-package git-gutter
+  :defer 0.3
+  :delight
+  :init (global-git-gutter-mode +1))
+(use-package git-timemachine
+  :defer 1
+  :delight)
+#+end_src
+** Rust
+#+begin_src emacs-lisp :tangle yes
+(use-package rust-mode)
+(use-package cargo)
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+#+end_src
+
+Run ~rustfmt~ on ~C-c <tab>~ for the current buffer
+#+begin_src emacs-lisp :tangle yes
+(add-hook 'rust-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c <tab>") #'rust-format-buffer)))
+#+end_src
+
+** Scala
+Ensime sucks just use ==scala-mode== for syntax highlighting and indent
+
+#+begin_src emacs-lisp :tangle yes
+(use-package scala-mode
+  :delight
+  :interpreter ("scala" . scala-mode))
+#+end_src
+* Features
+** Backups
+Customize the noisy default towards backup files.
+#+begin_src emacs-lisp :tangle yes
+(use-package files
+  :ensure nil
+  :config
+  (setq-default
+   backup-by-copying t
+   backup-directory-alist `(("." . ,(expand-file-name "backups/" user-emacs-directory)))
+   delete-old-versions t
+   version-control t))
+#+end_src
+
+** History
+
+
+Provides the ability to have commands and their history saved so that whenever
+you return to work, you can re-run things as you need them. This is not a
+radical function, it is part of a good user experience.
+
+#+Begin_src emacs-lisp :tangle yes
+(use-package savehist
+  :ensure nil
+  :custom
+  (history-delete-duplicates t)
+  (history-length t)
+  (savehist-additional-variables '(kill-ring search-ring regexp-search-ring))
+  (savehist-save-minibuffer-history 1)
+  :config (savehist-mode 1))
+#+end_src
+
+** Org
+Formatting in babel block, etc.
+#+begin_src emacs-lisp :tangle yes
+(use-package org-src
+  :ensure nil
+  :after org
+  :config
+  (setq-default
+   org-edit-src-content-indentation 0
+   org-edit-src-persistent-message nil
+   org-src-tab-acts-natively t           ; Indent code in org-babel src blocks
+   org-src-window-setup 'current-window))
+#+end_src
