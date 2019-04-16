@@ -71,8 +71,8 @@ For a better user experience of GNU Emacs, here are the default values I use.
 #+begin_src emacs-lisp :tangle yes
 ;; Set default font
 (set-face-attribute 'default nil
-                    :family "Hack"
-                    :height 120
+                    :family "Source Code Pro"
+                    :height 130
                     :weight 'normal
                     :width 'normal)
 #+end_src
@@ -118,6 +118,16 @@ Initialize environment variables.
   :defer 1
   :delight)
 #+end_src
+** Python
+Install python packages: ~pip install jedi flake8 autopep8 black yapf~
+   Elpy: [[https://elpy.readthedocs.io/en/latest/][documentation]]
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package elpy
+  :ensure t
+  :defer t
+  :init
+  (advice-add 'python-mode :before 'elpy-enable))
+#+END_SRC
 ** Rust
 #+begin_src emacs-lisp :tangle yes
 (use-package rust-mode)
@@ -182,6 +192,6 @@ Formatting in babel block, etc.
   (setq-default
    org-edit-src-content-indentation 0
    org-edit-src-persistent-message nil
-   org-src-tab-acts-natively t           ; Indent code in org-babel src blocks
+   org-src-tab-acts-natively t           ; Indent code in org-babel src blocks with <TAB>
    org-src-window-setup 'current-window))
 #+end_src
