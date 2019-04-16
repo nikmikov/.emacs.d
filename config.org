@@ -1,3 +1,31 @@
+* Table of content                                                      :TOC:
+- [[#about][About]]
+- [[#emacs-initialization][Emacs Initialization]]
+  - [[#packages-sources][Packages Sources]]
+  - [[#use-package][use-package]]
+- [[#start-up][Start up]]
+  - [[#better-defaults][Better defaults]]
+  - [[#theme][Theme]]
+  - [[#font][Font]]
+  - [[#turn-off-mouse-interface][Turn off mouse interface]]
+  - [[#macos-specific][MacOS specific]]
+- [[#development][Development]]
+  - [[#git][Git]]
+  - [[#python][Python]]
+  - [[#rust][Rust]]
+  - [[#scala][Scala]]
+- [[#features][Features]]
+  - [[#backups][Backups]]
+  - [[#history][History]]
+  - [[#org][Org]]
+
+* About
+This configuration is mainly based on configuration from: 
+[[https://github.com/rememberYou/.emacs.d/][Terencio Agozzino]] (=rememberYou=).
+
+With some parts adapted from [[https://github.com/angrybacon/dotemacs][Mathieu Marques]] (=angrybacon=) config.
+
+
 * Emacs Initialization
 
 ** Packages Sources
@@ -78,9 +106,7 @@ For a better user experience of GNU Emacs, here are the default values I use.
 #+end_src
 ** Turn off mouse interface
 
-Since I never use the mouse with GNU Emacs, I prefer not to use certain
-graphical elements as seen as the menu bar, toolbar, scrollbar and tooltip that
-I find invasive.
+Kill all UI graphical elements as seen as the menu bar, toolbar, scrollbar and tooltip
 
 #+begin_src emacs-lisp :tangle yes
 (when window-system
@@ -90,7 +116,9 @@ I find invasive.
   (tooltip-mode -1))              ; Disable the tooltips
 #+end_src
 ** MacOS specific
+
 General remapping and $PATH settings
+
 #+begin_src emacs-lisp :tangle yes
 (when (eq system-type 'darwin)
   (setq-default
@@ -99,13 +127,16 @@ General remapping and $PATH settings
    ns-option-modifier 'super                         ; Map Super to the Alt key
    ns-right-option-modifier nil))                    ; Disable the right Alt key
 #+end_src
+
 Initialize environment variables.
+
 #+begin_src emacs-lisp :tangle yes
 (use-package exec-path-from-shell
   :if (memq window-system '(mac ns))
   :defer 1
   :config (exec-path-from-shell-initialize))
 #+end_src
+
 * Development
 ** Git
 #+begin_src emacs-lisp :tangle yes
@@ -119,8 +150,11 @@ Initialize environment variables.
   :delight)
 #+end_src
 ** Python
+
 Install python packages: ~pip install jedi flake8 autopep8 black yapf~
-   Elpy: [[https://elpy.readthedocs.io/en/latest/][documentation]]
+
+Elpy: [[https://elpy.readthedocs.io/en/latest/][documentation]]
+
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package elpy
   :ensure t
@@ -129,6 +163,7 @@ Install python packages: ~pip install jedi flake8 autopep8 black yapf~
   (advice-add 'python-mode :before 'elpy-enable))
 #+END_SRC
 ** Rust
+
 #+begin_src emacs-lisp :tangle yes
 (use-package rust-mode)
 (use-package cargo)
@@ -136,6 +171,7 @@ Install python packages: ~pip install jedi flake8 autopep8 black yapf~
 #+end_src
 
 Run ~rustfmt~ on ~C-c <tab>~ for the current buffer
+
 #+begin_src emacs-lisp :tangle yes
 (add-hook 'rust-mode-hook
           (lambda ()
@@ -143,7 +179,8 @@ Run ~rustfmt~ on ~C-c <tab>~ for the current buffer
 #+end_src
 
 ** Scala
-Ensime sucks just use ==scala-mode== for syntax highlighting and indent
+
+Ensime sucks just use =scala-mode= for syntax highlighting and indent
 
 #+begin_src emacs-lisp :tangle yes
 (use-package scala-mode
@@ -152,7 +189,9 @@ Ensime sucks just use ==scala-mode== for syntax highlighting and indent
 #+end_src
 * Features
 ** Backups
+
 Customize the noisy default towards backup files.
+
 #+begin_src emacs-lisp :tangle yes
 (use-package files
   :ensure nil
@@ -166,10 +205,8 @@ Customize the noisy default towards backup files.
 
 ** History
 
-
 Provides the ability to have commands and their history saved so that whenever
-you return to work, you can re-run things as you need them. This is not a
-radical function, it is part of a good user experience.
+you return to work, you can re-run things as you need them.
 
 #+Begin_src emacs-lisp :tangle yes
 (use-package savehist
@@ -183,7 +220,26 @@ radical function, it is part of a good user experience.
 #+end_src
 
 ** Org
+
+#+begin_src emacs-lisp :tangle yes
+(use-package org
+  :ensure org-plus-contrib
+  :delight "Θ "
+  :preface
+ :hook
+  ((org-mode . org-sticky-header-mode)
+   (org-mode . toc-org-enable))
+  )
+#+end_src
+
+This package will maintain a TOC at the first heading that has a :TOC: tag.
+
+#+begin_src emacs-lisp :tangle yes
+(use-package toc-org :after org)
+#+end_src
+
 Formatting in babel block, etc.
+
 #+begin_src emacs-lisp :tangle yes
 (use-package org-src
   :ensure nil
