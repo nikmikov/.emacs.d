@@ -17,6 +17,7 @@
 - [[#features][Features]]
   - [[#backups][Backups]]
   - [[#history][History]]
+  - [[#hydra][Hydra]]
   - [[#org][Org]]
 
 * About
@@ -219,6 +220,74 @@ you return to work, you can re-run things as you need them.
   :config (savehist-mode 1))
 #+end_src
 
+** Hydra
+   
+[[https://github.com/abo-abo/hydra][Hydra on github]
+
+
+#+begin_src emacs-lisp :tangle yes
+(use-package hydra
+  :bind (("C-c m" . hydra-magit/body)
+         ("C-c o" . hydra-org/body)
+         ))
+
+(use-package major-mode-hydra
+  :after hydra
+  :preface
+  (defun with-alltheicon (icon str &optional height v-adjust)
+    "Displays an icon from all-the-icon."
+    (s-concat (all-the-icons-alltheicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+
+  (defun with-faicon (icon str &optional height v-adjust)
+    "Displays an icon from Font Awesome icon."
+    (s-concat (all-the-icons-faicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+
+  (defun with-fileicon (icon str &optional height v-adjust)
+    "Displays an icon from the Atom File Icons package."
+    (s-concat (all-the-icons-fileicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str))
+
+  (defun with-octicon (icon str &optional height v-adjust)
+    "Displays an icon from the GitHub Octicons."
+    (s-concat (all-the-icons-octicon icon :v-adjust (or v-adjust 0) :height (or height 1)) " " str)))
+#+end_src
+
+*** Hydra / Magit
+
+Group Magit commands.
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-magit
+  (:hint nil :color teal :quit-key "q" :title (with-alltheicon "git" "Magit" 1 -0.05))
+  ("Action"
+   (("b" magit-blame "blame")
+    ("c" magit-clone "clone")
+    ("i" magit-init "init")
+    ("l" magit-log-buffer-file "commit log (current file)")
+    ("L" magit-log-current "commit log (project)")
+    ("s" magit-status "status"))))
+#+end_src
+
+*** Hydra / Org
+
+Group Org commands.
+
+#+begin_src emacs-lisp :tangle yes
+(pretty-hydra-define hydra-org
+  (:hint nil :color teal :quit-key "q" :title (with-fileicon "org" "Org" 1 -0.05))
+  ("Action"
+   (("A" my/org-archive-done-tasks "archive")
+    ("a" org-agenda "agenda")
+    ("c" org-capture "capture")
+    ("d" org-decrypt-entry "decrypt")
+    ("i" org-insert-link-global "insert-link")
+    ("j" my/org-jump "jump-task")
+    ("k" org-cut-subtree "cut-subtree")
+    ("o" org-open-at-point-global "open-link")
+    ("r" org-refile "refile")
+    ("s" org-store-link "store-link")
+    ("t" org-show-todo-tree "todo-tree"))))
+#+end_src
+
 ** Org
 
 #+begin_src emacs-lisp :tangle yes
@@ -227,9 +296,8 @@ you return to work, you can re-run things as you need them.
   :delight "Θ "
   :preface
  :hook
-  ((org-mode . org-sticky-header-mode)
-   (org-mode . toc-org-enable))
-  )
+ ((org-mode . toc-org-enable))
+ )
 #+end_src
 
 This package will maintain a TOC at the first heading that has a :TOC: tag.
@@ -237,8 +305,6 @@ This package will maintain a TOC at the first heading that has a :TOC: tag.
 #+begin_src emacs-lisp :tangle yes
 (use-package toc-org :after org)
 #+end_src
-
-Formatting in babel block, etc.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package org-src
