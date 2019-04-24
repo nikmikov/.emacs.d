@@ -96,6 +96,7 @@ For a better user experience of GNU Emacs, here are the default values I use.
   :defer 0.1
   :config (doom-modeline-mode))
 #+end_src
+
 ** Font
 #+begin_src emacs-lisp :tangle yes
 ;; Set default font
@@ -297,7 +298,15 @@ Group Org commands.
   :preface
  :hook
  ((org-mode . toc-org-enable))
- )
+ :custom
+ (org-todo-keywords '((sequence "TODO(t)"
+                                "NEXT(s)"
+                                "WAITING(w@/!)"
+                                "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")))
+ (org-log-done 'time)
+ (org-default-notes-file "~/src/orgmode/refile.org")
+ (org-directory "~/src/orgmode")
+ (org-use-effective-time t))
 #+end_src
 
 This package will maintain a TOC at the first heading that has a :TOC: tag.
@@ -316,4 +325,35 @@ This package will maintain a TOC at the first heading that has a :TOC: tag.
    org-edit-src-persistent-message nil
    org-src-tab-acts-natively t           ; Indent code in org-babel src blocks with <TAB>
    org-src-window-setup 'current-window))
+#+end_src
+
+Org capture templates
+
+
+#+begin_src emacs-lisp :tangle yes
+(use-package org-capture
+    :ensure nil
+    :after org
+    :custom
+    (org-capture-templates
+     (quote (("t" "todo" entry (file "~/src/orgmode/refile.org")
+              "* TODO %?\n%U\n%a\n")
+             ("n" "note" entry (file "~/src/orgmode/refile.org")
+              "* %? :NOTE:\n%U\n%a\n")))))
+#+end_src
+
+Better colors for TODO items
+
+#+begin_src emacs-lisp :tangle yes
+(use-package org-faces
+  :ensure nil
+  :after org
+  :custom
+  (org-todo-keyword-faces
+   '(("TODO" . (:foreground "orchid" :weight normal))
+     ("DONE" . (:foreground "olive drab" :weight normal))
+     ("CANCELLED" . (:foreground "rosy brown" :weight normal))
+     ("SOMEDAY" . (:foreground "slate gray" :weight normal))
+     ("WAITING" . (:foreground "coral" :weight normal))
+     ("NEXT" . (:foreground "dodger blue" :weight normal)))))
 #+end_src
