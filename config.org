@@ -14,6 +14,7 @@
   - [[#python][Python]]
   - [[#rust][Rust]]
   - [[#scala][Scala]]
+  - [[#yaml][YAML]]
 - [[#features][Features]]
   - [[#backups][Backups]]
   - [[#history][History]]
@@ -189,6 +190,16 @@ Ensime sucks just use =scala-mode= for syntax highlighting and indent
   :delight
   :interpreter ("scala" . scala-mode))
 #+end_src
+
+** YAML
+
+#+begin_src emacs-lisp :tangle yes
+(use-package yaml-mode
+  :delight "ψ "
+  :mode "\\.yml\\'"
+  :interpreter ("yml" . yml-mode))
+#+end_src
+
 * Features
 ** Backups
 
@@ -325,6 +336,14 @@ This package will maintain a TOC at the first heading that has a :TOC: tag.
    org-edit-src-persistent-message nil
    org-src-tab-acts-natively t           ; Indent code in org-babel src blocks with <TAB>
    org-src-window-setup 'current-window))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package org-agenda
+  :ensure nil
+  :after org
+  :custom
+  (org-agenda-files '("~/src/orgmode")))
 #+end_src
 
 Org capture templates
