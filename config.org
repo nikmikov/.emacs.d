@@ -17,6 +17,7 @@
   - [[#yaml][YAML]]
 - [[#features][Features]]
   - [[#backups][Backups]]
+  - [[#dashboard][Dashboard]]
   - [[#history][History]]
   - [[#hydra][Hydra]]
   - [[#org][Org]]
@@ -26,7 +27,6 @@ This configuration is mainly based on configuration from:
 [[https://github.com/rememberYou/.emacs.d/][Terencio Agozzino]] (=rememberYou=).
 
 With some parts adapted from [[https://github.com/angrybacon/dotemacs][Mathieu Marques]] (=angrybacon=) config.
-
 
 * Emacs Initialization
 
@@ -215,13 +215,25 @@ Customize the noisy default towards backup files.
    delete-old-versions t
    version-control t))
 #+end_src
+** Dashboard
+
+   Dashboard on startup
+
+#+begin_src emacs-lisp :tangle yes
+(use-package dashboard
+  :init
+  (add-hook 'after-init-hook 'dashboard-refresh-buffer)
+  (add-hook 'dashboard-mode-hook 'my/dashboard-banner)
+  :custom (dashboard-startup-banner 'logo)
+  :config (dashboard-setup-startup-hook))
+#+end_src
 
 ** History
 
 Provides the ability to have commands and their history saved so that whenever
 you return to work, you can re-run things as you need them.
 
-#+Begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes
 (use-package savehist
   :ensure nil
   :custom
@@ -311,7 +323,7 @@ Group Org commands.
  ((org-mode . toc-org-enable))
  :custom
  (org-todo-keywords '((sequence "TODO(t)"
-                                "NEXT(s)"
+                                "NEXT(n)"
                                 "WAITING(w@/!)"
                                 "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")))
  (org-log-done 'time)
