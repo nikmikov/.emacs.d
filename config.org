@@ -168,9 +168,13 @@ Elpy: [[https://elpy.readthedocs.io/en/latest/][documentation]]
 ** Rust
 
 #+begin_src emacs-lisp :tangle yes
-(use-package rust-mode)
+(use-package rust-mode
+  :hook
+  ((rust-mode . cargo-minor-mode))
+  :config
+  (setq-default
+   rust-format-on-save t))
 (use-package cargo)
-(add-hook 'rust-mode-hook 'cargo-minor-mode)
 #+end_src
 
 Run ~rustfmt~ on ~C-c <tab>~ for the current buffer
@@ -223,7 +227,6 @@ Customize the noisy default towards backup files.
 (use-package dashboard
   :init
   (add-hook 'after-init-hook 'dashboard-refresh-buffer)
-  (add-hook 'dashboard-mode-hook 'my/dashboard-banner)
   :custom (dashboard-startup-banner 'logo)
   :config (dashboard-setup-startup-hook))
 #+end_src
