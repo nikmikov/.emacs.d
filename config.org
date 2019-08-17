@@ -10,7 +10,9 @@
   - [[#turn-off-mouse-interface][Turn off mouse interface]]
   - [[#macos-specific][MacOS specific]]
 - [[#development][Development]]
+  - [[#whitespace-butler][Whitespace butler]]
   - [[#git][Git]]
+  - [[#haskell][Haskell]]
   - [[#python][Python]]
   - [[#rust][Rust]]
   - [[#scala][Scala]]
@@ -33,9 +35,9 @@ With some parts adapted from [[https://github.com/angrybacon/dotemacs][Mathieu M
 ** Packages Sources
 
 #+begin_src emacs-lisp :tangle yes
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.org/packages/")
-                         ("org" . "http://orgmode.org/elpa/")))
+(setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")))
 #+end_src
 
 ** use-package
@@ -141,6 +143,14 @@ Initialize environment variables.
 #+end_src
 
 * Development
+** Whitespace butler
+An unobtrusive way to trim spaces from end of line
+#+begin_src emacs-lisp :tangle yes
+(use-package ws-butler
+  :hook
+  ((prog-mode . ws-butler-mode))
+)
+#+end_src
 ** Git
 #+begin_src emacs-lisp :tangle yes
 (use-package magit)
@@ -152,6 +162,15 @@ Initialize environment variables.
   :defer 1
   :delight)
 #+end_src
+** Haskell
+
+==stack== based Haskell IDE with autocomplete
+
+#+begin_src emacs-lisp :tangle yes
+(use-package intero)
+(add-hook 'haskell-mode-hook 'intero-mode)
+#+end_src   
+
 ** Python
 
 Install python packages: ~pip install jedi flake8 autopep8 black yapf~
