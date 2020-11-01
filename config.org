@@ -17,6 +17,7 @@
   - [[#rust][Rust]]
   - [[#scala][Scala]]
   - [[#yaml][YAML]]
+  - [[#rest-client][Rest client]]
 - [[#features][Features]]
   - [[#backups][Backups]]
   - [[#dashboard][Dashboard]]
@@ -221,6 +222,14 @@ Ensime sucks just use =scala-mode= for syntax highlighting and indent
   :delight "ψ "
   :mode "\\.yml\\'"
   :interpreter ("yml" . yml-mode))
+#+end_src
+
+** Rest client
+
+#+begin_src emacs-lisp :tangle yes
+(use-package restclient
+  :ensure t
+  :mode (("\\.rest\\'" . restclient-mode)))
 #+end_src
 
 * Features
