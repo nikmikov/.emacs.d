@@ -16,6 +16,7 @@
   - [[#python][Python]]
   - [[#rust][Rust]]
   - [[#scala][Scala]]
+  - [[#lua][Lua]]
   - [[#yaml][YAML]]
   - [[#json][JSON]]
   - [[#rest-client][Rest client]]
@@ -215,6 +216,15 @@ Ensime sucks just use =scala-mode= for syntax highlighting and indent
 (use-package scala-mode
   :delight
   :interpreter ("scala" . scala-mode))
+#+end_src
+
+** Lua
+
+#+begin_src emacs-lisp :tangle yes
+(use-package lua-mode
+  :delight "Λ "
+  :mode "\\.lua\\'"
+  :interpreter ("lua" . lua-mode))
 #+end_src
 
 ** YAML
