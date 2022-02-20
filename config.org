@@ -41,7 +41,7 @@ With some parts adapted from [[https://github.com/angrybacon/dotemacs][Mathieu M
 #+begin_src emacs-lisp :tangle yes
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")))
+                         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 #+end_src
 
 ** use-package
@@ -170,10 +170,10 @@ An unobtrusive way to trim spaces from end of line
 
 ==stack== based Haskell IDE with autocomplete
 
-#+begin_src emacs-lisp :tangle yes
-(use-package intero)
-(add-hook 'haskell-mode-hook 'intero-mode)
-#+end_src   
+## +begin_src emacs-lisp :tangle yes
+## (use-package intero)
+## (add-hook 'haskell-mode-hook 'intero-mode)
+## +end_src   
 
 ** Python
 
@@ -392,7 +392,7 @@ Group Org commands.
 
 #+begin_src emacs-lisp :tangle yes
 (use-package org
-  :ensure org-plus-contrib
+  :ensure org-contrib
   :delight "Θ "
   :preface
  :hook
@@ -403,8 +403,8 @@ Group Org commands.
                                 "WAITING(w@/!)"
                                 "SOMEDAY(.)" "|" "DONE(x!)" "CANCELLED(c@)")))
  (org-log-done 'time)
- (org-default-notes-file "~/src/orgmode/refile.org")
- (org-directory "~/src/orgmode")
+ (org-default-notes-file "~/org/refile.org")
+ (org-directory "~/org")
  (org-use-effective-time t))
 #+end_src
 
@@ -431,7 +431,7 @@ This package will maintain a TOC at the first heading that has a :TOC: tag.
   :ensure nil
   :after org
   :custom
-  (org-agenda-files '("~/src/orgmode")))
+  (org-agenda-files '("~/org")))
 #+end_src
 
 Org capture templates
@@ -443,9 +443,9 @@ Org capture templates
     :after org
     :custom
     (org-capture-templates
-     (quote (("t" "todo" entry (file "~/src/orgmode/refile.org")
+     (quote (("t" "todo" entry (file "~/org/refile.org")
               "* TODO %?\n%U\n%a\n")
-             ("n" "note" entry (file "~/src/orgmode/refile.org")
+             ("n" "note" entry (file "~/org/refile.org")
               "* %? :NOTE:\n%U\n%a\n")))))
 #+end_src
 
